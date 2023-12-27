@@ -51,6 +51,8 @@ func (c *Consumer) consume() (chan *sarama.ConsumerMessage, chan *sarama.Consume
 		if strings.Contains(topic, "__consumer_offsets") {
 			continue
 		}
+		log.Println("Start consuming topic", topic)
+		defer normalError()
 		partition, err := c.master.Partitions(topic)
 		if err != nil {
 			panic(err)
@@ -59,7 +61,6 @@ func (c *Consumer) consume() (chan *sarama.ConsumerMessage, chan *sarama.Consume
 		if err != nil {
 			panic(err)
 		}
-		log.Println("Start consuming topic", topic)
 		go func(topic string, consumer sarama.PartitionConsumer) {
 			for {
 				select {
